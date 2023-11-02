@@ -48,13 +48,12 @@ async function getLyrics(url: string) {
 };
 
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<void | Response> {
   try {
 
     const { searchParams } = new URL(request.url);
     const q = z.string().parse(searchParams.get('q'));
     const { url, title, primary_artist: {name} } = await searchTrack(q);
-    if (!url) return null;
     const lyrics = await getLyrics(url);
     return Response.json({
       success: true, data: {
