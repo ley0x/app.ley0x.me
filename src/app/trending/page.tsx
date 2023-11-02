@@ -1,14 +1,17 @@
-import { Button, Heading, Stack } from '@chakra-ui/react'
+import CommingSoon from '@/components/comming-soon'
+import { Box, Heading, Stack } from '@chakra-ui/react'
 
-export default function Home() {
+export default function Trending() {
   return (
-    <main className="flex flex-col justify-between p-12">
+    <Box as="main" height="max">
       <Heading as="h1">Trending</Heading>
       <Stack spacing={4} direction='row' align='center'>
-        <Button size='lg'>
-          Button
-        </Button>
+        <CommingSoon />
       </Stack>
-    </main>
+    </Box>
   )
 }
+
+
+
+

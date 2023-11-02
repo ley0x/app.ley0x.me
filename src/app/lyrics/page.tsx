@@ -1,19 +1,18 @@
-import ExportAsImage from '@/components/lyrics/export-as-image';
 import ImageUploader from '@/components/lyrics/image-uploader';
 import LyricsCanvas from '@/components/lyrics/lyrics-canvas';
 import TrackLyrics from '@/components/lyrics/track-lyrics';
-import {Heading, Stack} from '@chakra-ui/react';
+import {Divider, Flex, Heading} from '@chakra-ui/react';
 
 export default async function Lyrics() {
   return (
-    <main className='flex flex-col justify-between p-12'>
-      <Heading as='h1'>Lyrics</Heading>
-      <Stack spacing={4} direction='column'>
+    <Flex direction="column" as="main" height="max">
+      <Heading as='h1'>Créez vos images personnalisées avec les paroles de vos chansons préférées.</Heading>
+      <Divider my="6"/>
+      <Flex direction="column" gap={4} maxW="7xl" width="full" mx="auto" my="0">
         <LyricsCanvas />
-        <ExportAsImage />
         <ImageUploader />
         <TrackLyrics />
-      </Stack>
-    </main>
+      </Flex>
+    </Flex>
   );
 }

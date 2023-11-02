@@ -9,14 +9,23 @@ async function searchTrack(query: string) {
       Authorization: `Bearer ${environment.GENIUS_CLIENT_ACCESS_TOKEN}`,
     },
   });
+  if (!res.ok) throw new Error("Error while fetching");
   const data = await res.json();
-  if (!data.response.hits.length) return null;
-  return z.string().url().parse(data?.response?.hits?.[0]?.result?.url);
+  if (!data.response.hits.length) throw new Error('No results found');
+
+  const schema = z.object({
+    url: z.string().url(),
+    title: z.string(),
+    primary_artist: z.object({
+      name: z.string(),
+    }),
+  })
+  const track = schema.parse(data?.response?.hits?.[0]?.result);
+  console.log(track);
+  return track;
 }
 
-async function getLyrics(query: string) {
-  const url = await searchTrack(query);
-  if (!url) return null;
+async function getLyrics(url: string) {
   const res = await fetch(url);
   const data = await res.text();
   const $ = load(data);
@@ -34,19 +43,29 @@ async function getLyrics(query: string) {
       }
     });
   }
-  if (!lyrics) return null;
+  if (!lyrics) throw new Error('Could not find lyrics');
   return lyrics.trim();
 };
 
 
 export async function GET(request: NextRequest) {
   try {
+
     const { searchParams } = new URL(request.url);
     const q = z.string().parse(searchParams.get('q'));
-
-    const lyrics = await getLyrics(q);
-    return Response.json({ success: true, lyrics });
+    const { url, title, primary_artist: {name} } = await searchTrack(q);
+    if (!url) return null;
+    const lyrics = await getLyrics(url);
+    return Response.json({
+      success: true, data: {
+        url,
+        title,
+        artist: name,
+        lyrics,
+      }
+    });
   } catch (e: any) {
+    if (e instanceof Error) return Response.json({ success: false, error: e.message });
     return Response.json({ success: false, error: e });
   }
 }

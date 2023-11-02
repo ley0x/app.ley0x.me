@@ -18,7 +18,7 @@ import {z} from 'zod';
 
 const ImageUploader = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const placeholder = 'Votre image...';
+  const placeholder = 'Sélectionnez votre image...';
 
   const [, setSelectedImage] = useAtom(lyricsBackground);
   const [invalid, setInvalid] = useState<boolean>(false);
@@ -65,8 +65,10 @@ const ImageUploader = () => {
 
   return (
     <div>
-      <FormControl isInvalid={invalid} isRequired>
-        <InputGroup>
+      <FormControl width="full" maxW={["full", "xs"]} isInvalid={invalid} isRequired>
+        <InputGroup
+            height="12"
+        >
           <InputLeftElement pointerEvents='none'>
             <Icon as={FiFile} />
           </InputLeftElement>

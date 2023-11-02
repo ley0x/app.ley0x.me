@@ -4,18 +4,19 @@ import React from 'react';
 import { BiSolidQuoteAltLeft, BiSolidQuoteAltRight } from 'react-icons/bi';
 import Credits from './credits';
 import { useAtom } from 'jotai';
-import { selectedLyrics } from '@/store/store';
+import { selectedLyrics, trackArtist, trackName } from '@/store/store';
 
 type Props = {
   size: 'sm' | 'md' | 'lg';
-  artist: string;
-  track: string;
   noOfLines?: number;
 };
 
-const Lyrics = ({ size, artist, track, noOfLines }: Props) => {
+const Lyrics = ({ size, noOfLines }: Props) => {
 
   const [lyrics] = useAtom(selectedLyrics);
+  const [artist] = useAtom(trackArtist);
+  const [track] = useAtom(trackName);
+
   return (
     <Flex
       direction='column'

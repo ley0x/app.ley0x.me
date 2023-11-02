@@ -17,7 +17,7 @@ const Credits = ({ artist, size, track }: Props) => {
         noOfLines={1}
         px='2'
       >
-        {artist} - {track}
+        {artist || "Artiste"} - {track || "Titre"}
       </Text>
   );
 };
