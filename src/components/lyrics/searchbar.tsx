@@ -1,10 +1,12 @@
+'use client';
+
 import {
-  Center,
   IconButton,
   Input,
   InputGroup,
   InputLeftElement,
 } from '@chakra-ui/react';
+
 import React from 'react';
 import {IoSearch} from 'react-icons/io5';
 import {useForm, SubmitHandler} from 'react-hook-form';

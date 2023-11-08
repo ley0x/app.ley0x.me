@@ -48,8 +48,10 @@ async function getLyrics(url: string) {
 };
 
 
-export async function GET(request: NextRequest): Promise<void | Response> {
+export async function GET(request: NextRequest, route:any): Promise<void | Response> {
+
   try {
+    console.log("Route :", route);
 
     const { searchParams } = new URL(request.url);
     const q = z.string().parse(searchParams.get('q'));

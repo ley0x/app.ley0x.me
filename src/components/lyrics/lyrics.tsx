@@ -41,7 +41,7 @@ const Lyrics = ({ size, noOfLines }: Props) => {
           fontSize={size}
           fontWeight='semibold'
           lineHeight='tight'
-          noOfLines={noOfLines ?? 3}
+          noOfLines={noOfLines ?? 5}
           px='2'
         >
           {lyrics}
