@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { AlbumSchema } from "@/lib/zod/schemas";
 
+export const dynamic = 'force-dynamic' // defaults to force-static
 
 export async function GET(request: NextRequest): Promise<void | Response> {
 

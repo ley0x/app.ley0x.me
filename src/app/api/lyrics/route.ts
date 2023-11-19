@@ -3,6 +3,8 @@ import { load } from 'cheerio';
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic' // defaults to force-static
+
 async function searchTrack(query: string) {
   const res = await fetch(`https://api.genius.com/search?q=${encodeURIComponent(query)}`, {
     headers: {
