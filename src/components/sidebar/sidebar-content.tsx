@@ -9,7 +9,7 @@ import {
 import { IconType } from 'react-icons';
 import { FiHome, FiTrendingUp } from 'react-icons/fi';
 import NavItem from './nav-item';
-import { MdOutlineLyrics } from 'react-icons/md';
+import { MdOutlineLyrics, MdOutlineFileDownload } from 'react-icons/md';
 
 interface LinkItemProps {
   name: string;
@@ -19,7 +19,8 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome, href: '/' },
   { name: 'Lyrics card', icon: MdOutlineLyrics, href: '/lyrics' },
-  { name: 'Last.fm', icon: FiTrendingUp, href: '/lastfm' },
+  { name: 'Covers', icon: MdOutlineFileDownload, href: '/covers' },
+  // { name: 'Last.fm', icon: FiTrendingUp, href: '/lastfm' },
   // { name: 'Top 100', icon: FiCompass, href: '/tops' },
   // { name: 'Clashs', icon: FiStar, href: '/clashs' },
   // { name: 'Settings', icon: FiSettings, href: '/settings' },

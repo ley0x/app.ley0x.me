@@ -1,14 +1,18 @@
 import CommingSoon from '@/components/comming-soon'
-import { Divider, Flex, Heading, Stack } from '@chakra-ui/react'
+import { Box, Heading, Stack } from '@chakra-ui/react'
 
 export default function Home() {
   return (
-    <Flex direction="column">
+    <Box as="main" height="max">
       <Heading as="h1">Home</Heading>
-      <Divider my="6"/>
       <Stack spacing={4} direction='row' align='center'>
         <CommingSoon />
       </Stack>
-    </Flex>
+    </Box>
   )
 }
+
+
+
+
+
