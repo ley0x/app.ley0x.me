@@ -23,23 +23,28 @@ const Album = ({ album }: Props) => {
       });
     return data;
   };
+
   const download = async (quality: number) => {
     const a = document.createElement("a");
     switch (quality) {
       case 1000:
+        console.log("Downloading image 1000x1000.")
         a.href = await toDataURL(album.cover_xl);
         break;
       case 500:
+        console.log("Downloading image 500x500.")
         a.href = await toDataURL(album.cover_big);
         break;
       case 250:
+        console.log("Downloading image 250x250.")
         a.href = await toDataURL(album.cover_medium);
       default:
+        console.log("Downloading image 1000x1000.")
         a.href = await toDataURL(album.cover_xl);
     }
     a.download =
-      slugify(album.artist.name + " " + album.title).toLocaleLowerCase() +
-      "-cover.jpeg";
+      slugify(album.artist.name + " " + album.title+ ` ${quality}x${quality}`).toLocaleLowerCase() +
+      ".jpeg";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
