@@ -44,7 +44,7 @@ const Album = ({ album }: Props) => {
     }
     a.download =
       slugify(album.artist.name + " " + album.title+ ` ${quality}x${quality}`).toLocaleLowerCase() +
-      ".jpeg";
+      ".jpg";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
