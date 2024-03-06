@@ -1,3 +1,4 @@
+import { TrackSchema } from "@/lib/zod/schemas";
 import * as deezerApi from "deezer-api-ts";
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
@@ -11,8 +12,8 @@ export async function GET(request: NextRequest): Promise<void | Response> {
     const id = z.number().parse(parseInt(searchParams.get('id') ?? ''));
 
     const res = await deezerApi.getAlbumTracks(id);
-    // const data = AlbumSchema.array().parse(res.data)
-    return Response.json({ success: true, data: res });
+    const data = TrackSchema.array().parse(res.data)
+    return Response.json({ success: true, data });
   } catch (e: any) {
     if (e instanceof Error) return Response.json({ success: false, error: e.message });
     return Response.json({ success: false, error: e });
