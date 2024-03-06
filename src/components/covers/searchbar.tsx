@@ -38,7 +38,7 @@ const SearchBar = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data);
-    const url = new URL('/api/deezer/search', window.location.origin);
+    const url = new URL('/api/deezer/search/album', window.location.origin);
     url.searchParams.set('q', encodeURIComponent(data.search));
     const res = await fetch(url.toString());
     if (!res.ok) {

@@ -33,8 +33,8 @@ const TournamentBracket: React.FC<TournamentBracketProps> = () => {
   };
 
 
-  const handleClick: MouseEventHandler = async (e) => {
-    const url = new URL('/api/deezer/search', window.location.origin);
+  const handleClick: MouseEventHandler = async () => {
+    const url = new URL('/api/deezer/search/album', window.location.origin);
     url.searchParams.set('q', encodeURIComponent("superfly"));
     const res = await fetch(url.toString());
     if (!res.ok) {

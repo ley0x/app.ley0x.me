@@ -20,7 +20,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome, href: '/' },
   { name: 'Lyrics card', icon: MdOutlineLyrics, href: '/lyrics' },
   { name: 'Covers', icon: MdOutlineFileDownload, href: '/covers' },
-  // { name: 'Last.fm', icon: FiTrendingUp, href: '/lastfm' },
+  { name: 'Image generator', icon: FiTrendingUp, href: '/image-generator' },
   // { name: 'Top 100', icon: FiCompass, href: '/tops' },
   // { name: 'Clashs', icon: FiStar, href: '/clashs' },
   // { name: 'Settings', icon: FiSettings, href: '/settings' },
