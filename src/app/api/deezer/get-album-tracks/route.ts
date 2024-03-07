@@ -12,7 +12,10 @@ export async function GET(request: NextRequest): Promise<void | Response> {
     const id = z.number().parse(parseInt(searchParams.get('id') ?? ''));
 
     const res = await deezerApi.getAlbumTracks(id);
-    const data = TrackSchema.array().parse(res.data)
+    const { data } = z.object({
+      data: TrackSchema.array()
+    }).parse(res);
+
     return Response.json({ success: true, data });
   } catch (e: any) {
     if (e instanceof Error) return Response.json({ success: false, error: e.message });
