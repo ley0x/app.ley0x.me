@@ -2,7 +2,7 @@
 import { AlbumSchemaSoft, ArtistSchema, TrackSchema } from '@/lib/zod/schemas';
 import { Box, Divider, Heading, Flex, VStack, Button } from '@chakra-ui/react'
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { z } from 'zod';
 import { Artist } from '@/components/image-generator/artist';
 import { Track } from '@/components/image-generator/track';
@@ -10,6 +10,8 @@ import { ChooseAlbum, Album } from '@/components/image-generator/album';
 import SearchBar from '@/components/image-generator/searchbar';
 import DownloadAll from '@/components/image-generator/download-all';
 import { FaPlus } from "react-icons/fa6";
+
+import { v4 as uuidv4 } from 'uuid';
 
 const getAlbumTracks = async (id: number) => {
   const url = new URL('/api/deezer/get-album-tracks', window.location.origin);
@@ -42,7 +44,13 @@ export default function ImageGenerator() {
   const [selectedAlbum, setSelectedAlbum] = useState<z.infer<typeof AlbumSchemaSoft> | null>(null);
   const [selectedTracks, setSelectedTracks] = useState<z.infer<typeof TrackSchema>[] | null>(null);
   const [nb, setNb] = useState(6);
+  const [cover, setCover] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (selectedAlbum) {
+      setCover(selectedAlbum.cover_big);
+    }
+  }, [selectedAlbum]);
 
   const chooseAlbum: ChooseAlbum = useCallback(async (album) => {
     setSelectedAlbum(null);
@@ -79,7 +87,7 @@ export default function ImageGenerator() {
               <Flex gap="2" wrap="wrap">
                 {artists && artists.map((artist) => (
                   <Artist
-                    key={artist.id}
+                    key={uuidv4()}
                     artist={artist}
                     setSelectedArtist={setSelectedArtist}
                     setAlbums={setAlbums}
@@ -97,11 +105,7 @@ export default function ImageGenerator() {
             <div>
               <Heading as="h2" size="md">Sélectionnez un album :</Heading>
               <Flex gap="2" wrap="wrap">
-                {albums && albums.slice(0, nb).map((album) => (
-                  <>
-                    <Album key={album.id} album={album} chooseAlbum={chooseAlbum} active={selectedAlbum?.id === album.id} />
-                  </>
-                )
+                {albums && albums.slice(0, nb).map((album) => (<Album key={uuidv4()} album={album} chooseAlbum={chooseAlbum} active={selectedAlbum?.id === album.id} />)
                 )}
               </Flex>
               {nb >= albums.length ? null : <Button className="flex items-center border border-gray-500 mt-4" onClick={() => setNb(nb + 6)}><FaPlus className="mr-2" />Voir plus</Button>}
@@ -109,11 +113,11 @@ export default function ImageGenerator() {
             <Divider className="my-6" />
           </>
         )}
-        {selectedTracks && selectedAlbum && (
+        {cover && selectedTracks && selectedAlbum && (
           <div className="flex flex-col w-full">
             <Heading as="h2" size="md">Images générées :</Heading>
             <Flex gap="2" mt="6" wrap="wrap">
-              {selectedTracks.map((track) => (<Track key={track.id} track={track} cover={selectedAlbum.cover_big} />))}
+              {selectedTracks.map((track) => (<Track key={uuidv4()} track={track} cover={cover} />))}
             </Flex>
             <DownloadAll tracks={selectedTracks} />
           </div>
