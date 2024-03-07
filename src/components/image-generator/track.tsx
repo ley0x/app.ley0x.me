@@ -1,21 +1,28 @@
 import { TrackSchema } from "@/lib/zod/schemas";
-import Image from 'next/image';
+// import Image from 'next/image';
 import download from "downloadjs";
 import { toPng } from "html-to-image";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import slugify from "slugify";
 import { z } from "zod";
 
-import { Text, Box } from '@chakra-ui/react'
+import { Text, Box, Image } from '@chakra-ui/react'
 
-type Props = { 
+type Props = {
   track: z.infer<typeof TrackSchema>,
   cover: string,
 }
 export const Track = ({ track, cover }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    console.log('track', track.title);
+  }, [track]);
 
-  const handleExport = useCallback(() => {
+  useEffect(() => {
+    console.log('cover', cover);
+  }, [cover]);
+
+  const handleExport = () => {
     if (ref.current === null) {
       return
     }
@@ -28,7 +35,7 @@ export const Track = ({ track, cover }: Props) => {
       .catch((err) => {
         console.log(err)
       })
-  }, [ref, track.title, track.track_position ])
+  }
 
   return (
     <Box ref={ref} id={`${track.id}`} onClick={() => handleExport()} className="relative h-24 w-24 cursor-pointer">
@@ -41,6 +48,7 @@ export const Track = ({ track, cover }: Props) => {
       </Text>
       <Image
         src={cover}
+        id={`${track.id}-cover`}
         alt={track.title}
         height={100}
         width={100}
