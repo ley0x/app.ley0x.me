@@ -13,9 +13,7 @@ import {useForm, SubmitHandler} from 'react-hook-form';
 
 import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
-import {useAtom} from 'jotai';
-import {albumsCovers, trackArtist, trackLyrics, trackName, trackUrl} from '@/store/store';
-import {AlbumSchema, GetLyricsApi} from '@/lib/zod/schemas';
+import {AlbumSchema, AlbumSchemaSoft, ArtistSchema} from '@/lib/zod/schemas';
 
 type Inputs = {
   search: string;
@@ -25,8 +23,13 @@ const schema = z.object({
   search: z.string().min(1),
 });
 
-const SearchBar = () => {
-  const [____, setAlbums] = useAtom(albumsCovers);
+type Props = {
+  setArtists: (artists: z.infer<typeof ArtistSchema>[]) => void;
+  reset: () => void;
+  setAlbums: (albums: z.infer<typeof AlbumSchemaSoft>[]) => void;
+}
+
+const SearchBar = ({setArtists, reset, setAlbums}: Props) => {
 
   const {
     register,
@@ -37,8 +40,9 @@ const SearchBar = () => {
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data);
-    const url = new URL('/api/deezer/search/album', window.location.origin);
+    reset();
+    setAlbums([]);
+    const url = new URL('/api/deezer/search/artist', window.location.origin);
     url.searchParams.set('q', encodeURIComponent(data.search));
     const res = await fetch(url.toString());
     if (!res.ok) {
@@ -47,17 +51,17 @@ const SearchBar = () => {
     }
 
     const json = await res.json()
-    const albums = AlbumSchema.array().parse(json.data);
+    const artists = ArtistSchema.array().parse(json.data);
 
     if (!json.success) {
       console.error(json);
       return;
     }
-    if (!albums) {
+    if (!artists) {
       console.error(json);
       return;
     }
-    setAlbums(albums);
+    setArtists(artists.slice(0, 6));
   };
 
   return (
@@ -74,7 +78,7 @@ const SearchBar = () => {
         </InputLeftElement>
         <Input
           maxW='lg'
-          placeholder='Cherchez un album'
+          placeholder='Cherchez un artiste'
           size='lg'
           variant='filled'
           colorScheme='gray'
