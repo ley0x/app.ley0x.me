@@ -10,13 +10,14 @@ export async function GET(request: NextRequest): Promise<void | Response> {
   try {
     const { searchParams } = new URL(request.url);
     const id = z.number().parse(parseInt(searchParams.get('id') ?? ''));
+    console.log('Album id', id);
 
-    const res = await deezerApi.getAlbumTracks(id);
-    const { data } = z.object({
-      data: TrackSchema.array()
-    }).parse(res);
+    const url = `https://api.deezer.com/album/${id}/tracks`
 
-    return Response.json({ success: true, data });
+    const data = await fetch(url).then(res => res.json()).then(z.object({ data: TrackSchema.array() }).parse);
+    console.log('Data', data.data.map(track => track.title));
+
+    return Response.json({ success: true, data: data.data });
   } catch (e: any) {
     if (e instanceof Error) return Response.json({ success: false, error: e.message });
     return Response.json({ success: false, error: e });
