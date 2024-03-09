@@ -117,9 +117,9 @@ export default function ImageGenerator() {
           <div className="flex flex-col w-full">
             <Heading as="h2" size="md">Images générées :</Heading>
             <Flex gap="2" mt="6" wrap="wrap">
-              {selectedTracks.map((track) => (<Track key={uuidv4()} track={track} cover={cover} />))}
+              {selectedTracks.map((track) => (<Track albumTitle={selectedAlbum.title} key={uuidv4()} track={track} cover={cover} />))}
             </Flex>
-            <DownloadAll tracks={selectedTracks} />
+            <DownloadAll albumTitle={selectedAlbum.title} tracks={selectedTracks} />
           </div>
         )}
       </Flex>
