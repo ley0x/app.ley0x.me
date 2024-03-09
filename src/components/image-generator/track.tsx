@@ -11,8 +11,9 @@ import { Text, Box, Image } from '@chakra-ui/react'
 type Props = {
   track: z.infer<typeof TrackSchema>,
   cover: string,
+  albumTitle: string;
 }
-export const Track = ({ track, cover }: Props) => {
+export const Track = ({ track, cover, albumTitle }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     console.log('track', track.title);
@@ -29,7 +30,7 @@ export const Track = ({ track, cover }: Props) => {
 
     toPng(ref.current, { cacheBust: true, pixelRatio: 3 })
       .then((dataUrl) => {
-        const name = `${slugify(`${track.track_position}-${track.title}`, { lower: true })}.png`
+        const name = `${slugify(`${albumTitle}-${track.track_position}-${track.title}`, { lower: true })}.png`
         download(dataUrl, name)
       })
       .catch((err) => {

@@ -2,7 +2,7 @@ import { TrackSchema } from '@/lib/zod/schemas';
 import { Button } from '@chakra-ui/react';
 import download from 'downloadjs';
 import { toPng } from 'html-to-image'
-import React, { useCallback, useRef } from 'react'
+import React from 'react'
 import slugify from 'slugify';
 import { z } from 'zod';
 
@@ -10,13 +10,17 @@ type TTrack = z.infer<typeof TrackSchema>
 
 type Props = {
   tracks: TTrack[] | null;
+  albumTitle: string;
 }
 
-const DownloadAll = ({ tracks }: Props) => {
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const DownloadAll = ({ tracks, albumTitle }: Props) => {
   if (!tracks) return null;
   const downloadAll = async () => {
     for (const track of tracks) {
       await downloadTrack(track);
+      await wait(100);
     }
   }
 
@@ -26,7 +30,7 @@ const DownloadAll = ({ tracks }: Props) => {
 
     await toPng(ref, { cacheBust: true, pixelRatio: 3 })
       .then((dataUrl) => {
-        const name = `${slugify(`${track.track_position}-${track.title}`, { lower: true })}.png`
+        const name = `${slugify(`${albumTitle}-${track.track_position}-${track.title}`, { lower: true })}.png`
         download(dataUrl, name)
       })
       .catch((err) => {
