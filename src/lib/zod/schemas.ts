@@ -52,7 +52,12 @@ export const AlbumSchemaSoft = z.object({
   tracklist: z.string().url(),
   fans: z.number(),
   release_date: z.string(),
-  record_type: z.literal('album').or(z.literal('single')).or(z.literal('compilation')).or(z.literal('ep')).or(z.literal('live')),
+  record_type: z.literal('album')
+              .or(z.literal('single'))
+              .or(z.literal('compilation'))
+              .or(z.literal('ep'))
+              .or(z.literal('live')
+              .or(z.literal("compile"))),
 });
 
 

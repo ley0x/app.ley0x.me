@@ -12,7 +12,7 @@ export async function GET(request: NextRequest): Promise<void | Response> {
     const id = z.number().parse(parseInt(searchParams.get('id') ?? ''));
     console.log('Album id', id);
 
-    const url = `https://api.deezer.com/album/${id}/tracks`
+    const url = `https://api.deezer.com/album/${id}/tracks?limit=100`
 
     const data = await fetch(url).then(res => res.json()).then(z.object({ data: TrackSchema.array() }).parse);
     console.log('Data', data.data.map(track => track.title));
