@@ -1,4 +1,3 @@
-import CommingSoon from '@/components/comming-soon'
 import TournamentBracket from '@/components/tournament/tournament-bracket'
 import { Box, Divider, Heading, Stack } from '@chakra-ui/react'
 

@@ -1,6 +1,6 @@
 "use client";
-import { AlbumSchemaSoft, ArtistSchema, TrackSchema } from '@/lib/zod/schemas';
-import { Box, Divider, Heading, Flex, VStack, Button } from '@chakra-ui/react'
+import { AlbumSchemaSoft, ArtistSchema, ColorsSchema, SizesSchema, TColors, TSizes, TrackSchema } from '@/lib/zod/schemas';
+import { Box, Divider, Heading, Flex, VStack, Button, RadioGroup, Stack, Radio, Text, HStack, List, ListItem, ListIcon } from '@chakra-ui/react'
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { z } from 'zod';
@@ -12,6 +12,8 @@ import DownloadAll from '@/components/image-generator/download-all';
 import { FaPlus } from "react-icons/fa6";
 
 import { v4 as uuidv4 } from 'uuid';
+import { MdBorderColor, MdFormatSize } from 'react-icons/md';
+import { IoColorPaletteSharp } from 'react-icons/io5';
 
 const getAlbumTracks = async (id: number) => {
   const url = new URL('/api/deezer/get-album-tracks', window.location.origin);
@@ -70,6 +72,10 @@ export default function ImageGenerator() {
     setSelectedTracks(null);
   }, [setSelectedArtist, setSelectedAlbum, setSelectedTracks])
 
+  const [txtColor, setTxtColor] = useState<TColors>('black');
+  const [txtSize, setTxtSize] = useState<TSizes>('md');
+  const [bgColor, setBgColor] = useState<TColors>('white');
+
   return (
     <Box as="main" height="max">
       <Heading as="h1">Générateur d&apos;image pour Tierlists</Heading>
@@ -115,9 +121,71 @@ export default function ImageGenerator() {
         )}
         {cover && selectedTracks && selectedAlbum && (
           <div className="flex flex-col w-full">
+            <section className="mb-5">
+              <Heading as="h2" size="md" mb="2">Personnalisation :</Heading>
+              <List spacing={3}>
+                <ListItem>
+                  <HStack>
+                    <ListIcon as={MdFormatSize} />
+                    <Text>Taille du texte :</Text>
+                    <RadioGroup value={txtSize} onChange={(data) => {
+                        const r = SizesSchema.safeParse(data);
+                        if (r.success) setTxtSize(r.data)
+                      }} colorScheme='gray'>
+                      <Stack direction='row'>
+                        <Radio value='sm'>Petit</Radio>
+                        <Radio value='md'>Normal</Radio>
+                        <Radio value='lg'>Grand</Radio>
+                      </Stack>
+                    </RadioGroup>
+                  </HStack>
+                </ListItem>
+                <ListItem>
+                  <HStack>
+                    <ListIcon as={MdBorderColor} />
+                    <Text>Couleur du texte :</Text>
+                    <RadioGroup value={txtColor} onChange={(data) => {
+                        const r = ColorsSchema.safeParse(data);
+                        if (r.success) setTxtColor(r.data)
+                      }} colorScheme='gray'>
+                      <Stack direction='row'>
+                        <Radio value='black'>Noir</Radio>
+                        <Radio value='white'>Blanc</Radio>
+                        <Radio value='blue'>Bleu</Radio>
+                        <Radio value='green'>Vert</Radio>
+                        <Radio value='red'>Rouge</Radio>
+                        <Radio value='yellow'>Jaune</Radio>
+                      </Stack>
+                    </RadioGroup>
+                  </HStack>
+                </ListItem>
+                <ListItem>
+                  <HStack>
+                    <ListIcon as={IoColorPaletteSharp} />
+                    <Text>Couleur du fond :</Text>
+                    <RadioGroup value={bgColor}
+                      onChange={(data) => {
+                        const r = ColorsSchema.safeParse(data);
+                        if (r.success) setBgColor(r.data)
+                      }}
+                      colorScheme='gray'>
+                      <Stack direction='row'>
+                        <Radio value='black'>Noir</Radio>
+                        <Radio value='white'>Blanc</Radio>
+                        <Radio value='blue'>Bleu</Radio>
+                        <Radio value='green'>Vert</Radio>
+                        <Radio value='red'>Rouge</Radio>
+                        <Radio value='yellow'>Jaune</Radio>
+                      </Stack>
+                    </RadioGroup>
+                  </HStack>
+                </ListItem>
+              </List>
+
+            </section>
             <Heading as="h2" size="md">Images générées :</Heading>
             <Flex gap="2" mt="6" wrap="wrap">
-              {selectedTracks.map((track) => (<Track albumTitle={selectedAlbum.title} key={uuidv4()} track={track} cover={cover} />))}
+              {selectedTracks.map((track) => (<Track albumTitle={selectedAlbum.title} key={uuidv4()} track={track} cover={cover} txtColor={txtColor} bgColor={bgColor} txtSize={txtSize} />))}
             </Flex>
             <DownloadAll albumTitle={selectedAlbum.title} tracks={selectedTracks} />
           </div>

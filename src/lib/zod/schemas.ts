@@ -71,3 +71,9 @@ export const TrackSchema = z.object({
   track_position: z.number(),
   disk_number: z.number(),
 });
+
+
+export const ColorsSchema = z.enum(['black', 'white', 'red', 'green', 'blue', 'yellow']);
+export type TColors = z.infer<typeof ColorsSchema>;
+export const SizesSchema = z.enum(['sm', 'md', 'lg']);
+export type TSizes = z.infer<typeof SizesSchema>;

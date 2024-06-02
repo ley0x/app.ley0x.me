@@ -3,13 +3,14 @@ import {
   BoxProps,
   CloseButton,
   Flex,
-  Text,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { IconType } from 'react-icons';
 import { FiHome, FiTrendingUp } from 'react-icons/fi';
 import NavItem from './nav-item';
 import { MdOutlineLyrics, MdOutlineFileDownload } from 'react-icons/md';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface LinkItemProps {
   name: string;
@@ -17,7 +18,6 @@ interface LinkItemProps {
   href: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: 'Home', icon: FiHome, href: '/' },
   { name: 'Lyrics card', icon: MdOutlineLyrics, href: '/lyrics' },
   { name: 'Covers', icon: MdOutlineFileDownload, href: '/covers' },
   { name: 'Image generator', icon: FiTrendingUp, href: '/image-generator' },
@@ -42,10 +42,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h='full'
       {...rest}
     >
-      <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
-        <Text fontSize='2xl' fontFamily='monospace' fontWeight='bold' color={useColorModeValue("gray.700", "gray.50")}>
-          Logo
-        </Text>
+      <Flex alignItems='center' mx='8' justifyContent='space-between'>
+        <Link href='/' className="mx-auto">
+          <Image src='/logo_goats_circle.webp' alt='Logo' width={100} height={100} className="my-5 rounded-full shadow" />
+        </Link>
         <CloseButton color={useColorModeValue("gray.900", "gray.50")} display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
