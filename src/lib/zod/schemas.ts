@@ -40,6 +40,50 @@ export const AlbumSchema = z.object({
   artist: ArtistSchema,
 });
 
+export const LastFmTrackSchema = z.object({
+  name: z.string(),
+  duration: z.number().nullable(),
+  artist: z.object({
+    name: z.string(),
+    url: z.string().url(),
+  }),
+  url: z.string().url(),
+})
+
+export const LastFmAlbumSchema = z.object({
+  name: z.string(),
+  artist: z.string(),
+  url: z.string().url(),
+  image: z.array(z.object({
+    "#text": z.string(),
+    size: z.union([z.literal('small'), z.literal('medium'), z.literal('large'), z.literal('extralarge'), z.literal('mega'), z.literal("")]),
+  })),
+  listeners: z.string().nullish(),
+  playcount: z.string().nullish(),
+  tags: z.union([
+    z.literal(""),
+    z.object({
+      tag: z.array(z.object({
+        name: z.string(),
+        url: z.string().url(),
+      })),
+    })]).nullish(),
+  tracks: z.object({
+      track: z.union([z.array(LastFmTrackSchema), LastFmTrackSchema]).nullish(),
+    }).nullish()
+})
+
+
+export const LastFmSearchAlbumSchema = z.object({
+  name: z.string(),
+  artist: z.string(),
+  url: z.string().url(),
+  image: z.array(z.object({
+    "#text": z.string(),
+    size: z.union([z.literal('small'), z.literal('medium'), z.literal('large'), z.literal('extralarge'), z.literal('mega'), z.literal("")]),
+  }))
+})
+
 
 export const AlbumSchemaSoft = z.object({
   id: z.number(),
@@ -53,11 +97,11 @@ export const AlbumSchemaSoft = z.object({
   fans: z.number(),
   release_date: z.string(),
   record_type: z.literal('album')
-              .or(z.literal('single'))
-              .or(z.literal('compilation'))
-              .or(z.literal('ep'))
-              .or(z.literal('live')
-              .or(z.literal("compile"))),
+    .or(z.literal('single'))
+    .or(z.literal('compilation'))
+    .or(z.literal('ep'))
+    .or(z.literal('live')
+      .or(z.literal("compile"))),
 });
 
 

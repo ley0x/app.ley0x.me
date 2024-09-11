@@ -1,6 +1,6 @@
 'use client';
 
-import { Stack } from '@chakra-ui/react';
+import { Box, Grid, Stack } from '@chakra-ui/react';
 import React from 'react'
 import Album from './album';
 import SearchBar from './searchbar';
@@ -12,11 +12,14 @@ const Covers = () => {
   return (
     <Stack spacing={4} direction='column' align='center'>
       <SearchBar />
-      {albums.slice(0, 10).map((album) => (
-        <Album album={album}
-          key={album.id}
-        />
-      ))}
+
+      <Box className="flex flex-wrap flex-row " gap={6}>
+        {albums.map((album, index) => (
+          <Album album={album}
+            key={index}
+          />
+        ))}
+      </Box>
     </Stack>
   )
 }

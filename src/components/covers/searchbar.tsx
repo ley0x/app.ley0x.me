@@ -1,21 +1,23 @@
 'use client';
 
 import {
+  Button,
   IconButton,
   Input,
   InputGroup,
   InputLeftElement,
+  InputRightElement,
 } from '@chakra-ui/react';
 
 import React from 'react';
-import {IoSearch} from 'react-icons/io5';
-import {useForm, SubmitHandler} from 'react-hook-form';
+import { IoSearch } from 'react-icons/io5';
+import { useForm, SubmitHandler } from 'react-hook-form';
 
-import {zodResolver} from '@hookform/resolvers/zod';
-import {z} from 'zod';
-import {useAtom} from 'jotai';
-import {albumsCovers, trackArtist, trackLyrics, trackName, trackUrl} from '@/store/store';
-import {AlbumSchema, GetLyricsApi} from '@/lib/zod/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useAtom } from 'jotai';
+import { albumsCovers } from '@/store/store';
+import { AlbumSchema, LastFmAlbumSchema } from '@/lib/zod/schemas';
 
 type Inputs = {
   search: string;
@@ -31,14 +33,14 @@ const SearchBar = () => {
   const {
     register,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm<Inputs>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data);
-    const url = new URL('/api/deezer/search/album', window.location.origin);
+    const url = new URL('/api/lastfm/search/album', window.location.origin);
     url.searchParams.set('q', encodeURIComponent(data.search));
     const res = await fetch(url.toString());
     if (!res.ok) {
@@ -47,7 +49,7 @@ const SearchBar = () => {
     }
 
     const json = await res.json()
-    const albums = AlbumSchema.array().parse(json.data);
+    const albums = LastFmAlbumSchema.array().parse(json.data);
 
     if (!json.success) {
       console.error(json);
@@ -63,15 +65,6 @@ const SearchBar = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <InputGroup size='md' variant='outline'>
-        <InputLeftElement height='full' pointerEvents='none'>
-          <IconButton
-            ml='3'
-            size='md'
-            height='full'
-            aria-label='Cherchez un album'
-            icon={<IoSearch style={{fontSize: '1.5rem'}} />}
-          />
-        </InputLeftElement>
         <Input
           maxW='lg'
           placeholder='Cherchez un album'
@@ -82,6 +75,14 @@ const SearchBar = () => {
           focusBorderColor='gray.300'
           {...register('search')}
         />
+      <InputRightElement className="mt-1 mr-1">
+          <IconButton
+            size='md'
+            aria-label='Cherchez un album'
+            icon={<IoSearch style={{ fontSize: '1.5rem' }} />}
+            onClick={handleSubmit(onSubmit)}
+          />
+      </InputRightElement>
       </InputGroup>
     </form>
   );

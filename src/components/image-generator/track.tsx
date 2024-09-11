@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { TColors, TSizes, TrackSchema } from "@/lib/zod/schemas";
 import download from "downloadjs";
 import { toPng } from "html-to-image";
@@ -5,7 +6,7 @@ import { useEffect, useRef } from "react";
 import slugify from "slugify";
 import { z } from "zod";
 
-import { Text, Box, Image } from '@chakra-ui/react'
+import { Text, Box } from '@chakra-ui/react'
 import clsx from "clsx";
 
 type Props = {
@@ -74,8 +75,10 @@ export const Track = ({ track, cover, albumTitle, txtColor, bgColor, txtSize }: 
         id={`${track.id}-cover`}
         alt={track.title}
         loading="lazy"
+        unoptimized
         className="absolute h-24 w-24 z-20 inset-0 mx-auto shadow"
       />
+
     </Box>
   )
 }

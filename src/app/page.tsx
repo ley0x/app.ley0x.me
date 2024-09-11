@@ -5,7 +5,7 @@ export default function Home() {
 
   return (
     <Box as="main" height="max">
-      <Heading as="h1">Home</Heading>
+      <Heading as="h1">Accueil</Heading>
       <Stack spacing={4} direction='row' align='center'>
       </Stack>
     </Box>

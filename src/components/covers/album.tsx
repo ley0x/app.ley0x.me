@@ -1,14 +1,15 @@
-import { AlbumSchema } from '@/lib/zod/schemas';
-import { Button, Card, CardBody, CardFooter, Divider, Heading, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import { LastFmAlbumSchema } from '@/lib/zod/schemas';
+import { Button, Flex, Heading, Stack, Tag, Text, useColorModeValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react'
 import slugify from 'slugify';
 import { z } from 'zod';
-import { MdOutlineFileDownload } from "react-icons/md";
+import { MdOutlineContentCopy, MdOutlineFileDownload } from "react-icons/md";
 import Link from 'next/link';
+import { copyImageToClipboard } from '@/lib/utils';
 
 type Props = {
-  album: z.infer<typeof AlbumSchema>
+  album: z.infer<typeof LastFmAlbumSchema>
 }
 
 const Album = ({ album }: Props) => {
@@ -24,89 +25,106 @@ const Album = ({ album }: Props) => {
     return data;
   };
 
-  const download = async (quality: number) => {
+  const download = async () => {
     const a = document.createElement("a");
-    switch (quality) {
-      case 1000:
-        console.log("Downloading image 1000x1000.")
-        a.href = await toDataURL(album.cover_xl);
-        break;
-      case 500:
-        console.log("Downloading image 500x500.")
-        a.href = await toDataURL(album.cover_big);
-        break;
-      case 250:
-        console.log("Downloading image 250x250.")
-        a.href = await toDataURL(album.cover_medium);
-      default:
-        console.log("Downloading image 1000x1000.")
-        a.href = await toDataURL(album.cover_xl);
+    let link = getAlbumSrcLink(album);
+    if (!link) {
+      return;
     }
+    a.href = await toDataURL(link);
     a.download =
-      slugify(album.artist.name + " " + album.title+ ` ${quality}x${quality}`).toLocaleLowerCase() +
+      slugify(album.artist + " " + album.name + " cover").toLocaleLowerCase() +
       ".jpg";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
   };
 
-  return (
-    <Card width="md" maxW="full">
-      <CardBody>
 
-        <Stack mt='6' spacing='3'>
+  const getAlbumSrcLink = (album: z.infer<typeof LastFmAlbumSchema>) => {
+    let src = album.image.find((i) => i.size === "mega")?.['#text'];
+
+    if (!src) { src = album.image.find((i) => i.size === "large")?.['#text']; }
+    if (!src) { src = album.image.find((i) => i.size === "large")?.['#text']; }
+    if (!src) { src = album.image.find((i) => i.size === "medium")?.['#text']; }
+    if (!src) { src = album.image.find((i) => i.size === "small")?.['#text']; }
+    if (!src) { src = album.image.find((i) => i.size === "")?.['#text']; }
+    if (!src) src = album.image[0]["#text"];
+    if (!src) src = "/";
+    return src;
+  };
+
+  const copy = async (album: z.infer<typeof LastFmAlbumSchema>) => {
+    let link = getAlbumSrcLink(album);
+    if (!link) {
+      return;
+    }
+    await copyImageToClipboard(link);
+  };
+
+  const getTrackNumber = (album: z.infer<typeof LastFmAlbumSchema>) => {
+    if (!album.tracks) return 1;
+    if (!album.tracks.track) return 1;
+    const tracks = album.tracks.track;
+    // test if tracks is a single object or an array of objects
+    if (Array.isArray(tracks)) {
+      return tracks.length;
+    }
+    return 1;
+  };
+
+  const getArrayOfTags = (album: z.infer<typeof LastFmAlbumSchema>) => {
+    if (!album.tags) return [];
+    if (!album.tags.tag) return [];
+    const tags = album.tags.tag;
+    return tags.map((tag) => tag.name);
+  };
+
+  return (
+    <Flex flexDirection={"column"} justifyContent="space-between" gap={2} p="3" w='250px' maxWidth="full" bg='white' maxW="full" className="shadow">
+      <Stack mt="2" spacing='1'>
+        <Link href={album.url} target="_blank">
           <Image
-            src={album.cover_big}
-            alt='Illustration to lyrics'
-            height={500}
-            width={500}
+            src={getAlbumSrcLink(album)}
+            alt={`Cover of the album ${album.name}`}
+            height={200}
+            width={200}
             loading="lazy"
+            unoptimized
+            className="mx-auto my-0"
           />
-          <Heading size='md'><Link href={album.link} target="_blank">{album.title} - {album.nb_tracks} tracks.</Link></Heading>
-          <Stack direction="row" align="center">
-            <Image src={album.artist.picture_medium} alt='Artist' height={50} width={50} className="rounded-full" loading="lazy" />
-            <Link href={album.artist.link} target="_blank">
-              {album.artist.name}
-            </Link>
-          </Stack>
-        </Stack>
-      </CardBody>
-      <Divider />
-      <CardFooter>
-        <Stack width="full" direction="column">
-          <Button 
-            width="full"
-            size="lg"
-            colorScheme={useColorModeValue('teal', 'teal')}
-            variant="solid"
-            className="text-black hover:text-white"
-            onClick={() => download(1000)} leftIcon={<MdOutlineFileDownload />}
-          >
-            1000x1000
+        </Link>
+        <Heading size='md'>
+          {album.artist} - {album.name}
+        </Heading>
+        <Text>{getTrackNumber(album)} tracks</Text>
+        <Flex flexWrap="wrap" gap={2}>
+          {getArrayOfTags(album).map((tag) => <Tag colorScheme="orange" width="fit-content" key={tag}>{tag}</Tag>)}
+        </Flex>
+      </Stack>
+      <Stack width="full" direction="column">
+        <Button
+          width="full"
+          size="sm"
+          colorScheme={useColorModeValue('orange', 'orange')}
+          variant="solid"
+          className="text-black hover:text-white border border-gray-400 hover:border-transparent"
+          onClick={() => download()} leftIcon={<MdOutlineFileDownload />}
+        >
+          Télécharger
         </Button>
-          <Button 
-            width="full"
-            size="lg"
-            colorScheme={useColorModeValue('teal', 'teal')}
-            variant="solid"
-            className="text-black hover:text-white"
-            onClick={() => download(500)} leftIcon={<MdOutlineFileDownload />}
-          >
-            500x500
+        <Button
+          width="full"
+          size="sm"
+          colorScheme={useColorModeValue('orange', 'orange')}
+          variant="solid"
+          className="text-black hover:text-white border border-gray-400 hover:border-transparent"
+          onClick={() => copy(album)} leftIcon={<MdOutlineContentCopy />}
+        >
+          Copier
         </Button>
-          <Button 
-            width="full"
-            size="lg"
-            colorScheme={useColorModeValue('teal', 'teal')}
-            variant="solid"
-            className="text-black hover:text-white"
-            onClick={() => download(250)} leftIcon={<MdOutlineFileDownload />}
-          >
-            250x250
-        </Button>
-        </Stack>
-      </CardFooter>
-    </Card>
+      </Stack>
+    </Flex>
   )
 }
 

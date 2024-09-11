@@ -13,6 +13,7 @@ export async function GET(request: NextRequest): Promise<void | Response> {
 
     const opts = {}
     const res = await deezerApi.searchAlbums(q, opts);
+    console.log(res.data)
     const data = AlbumSchema.array().parse(res.data)
     return Response.json({ success: true, data });
   } catch (e: any) {
